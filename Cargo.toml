@@ -1,0 +1,14 @@
+[package]
+name = "interpolate_name"
+version = "0.1.0"
+authors = ["Luca Barbato <lu_zero@gentoo.org>"]
+description = "Simple procedural macro attribute for repetitive tests"
+
+[lib]
+proc-macro = true
+test = false
+
+[dependencies]
+syn = "0.14"
+quote = "0.6"
+proc-macro2 = "0.4"
