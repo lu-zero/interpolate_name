@@ -9,23 +9,25 @@ use proc_macro2::{Ident, Span, TokenStream, TokenTree};
 
 fn fn_name(item: TokenStream) -> Ident {
     let mut tokens = item.into_iter();
-    let mut fn_found = false;
-    while let Some(tok) = tokens.next() {
+    let found = tokens.find(|tok| {
         if let TokenTree::Ident(word) = tok {
             if word == "fn" {
-                fn_found = true;
-                break;
+                true
+            } else {
+                false
             }
+        } else {
+            false
         }
+    }).is_some();
+
+    if !found {
+        panic!("failed to find function name")
     }
 
     match tokens.next() {
         Some(TokenTree::Ident(word)) => word,
-        _ => if fn_found {
-            panic!("failed to find function name")
-        } else {
-            panic!("the macro attribute applies only to functions")
-        },
+        _ => panic!("the macro attribute applies only to functions"),
     }
 }
 
