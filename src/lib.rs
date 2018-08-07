@@ -22,13 +22,36 @@ fn fn_name(item: TokenStream) -> Ident {
     }).is_some();
 
     if !found {
-        panic!("failed to find function name")
+        panic!("the macro attribute applies only to functions")
     }
 
     match tokens.next() {
         Some(TokenTree::Ident(word)) => word,
-        _ => panic!("the macro attribute applies only to functions"),
+        _ => panic!("failed to find function name"),
     }
+}
+
+fn fn_attrs_name(item: TokenStream) -> (TokenStream, Ident) {
+    let mut tokens = item.into_iter();
+
+    let attrs = tokens.by_ref().take_while(|tok| {
+        if let TokenTree::Ident(word) = tok {
+            if word == "fn" {
+                false
+            } else {
+                true
+            }
+        } else {
+            true
+        }
+    }).collect::<Vec<_>>();
+
+    let name = match tokens.next() {
+        Some(TokenTree::Ident(word)) => word,
+        _ => panic!("the macro attribute applies only to functions"),
+    };
+
+    (TokenStream::from_iter(attrs.into_iter()), name)
 }
 
 #[proc_macro_attribute]
@@ -47,11 +70,12 @@ pub fn interpolate_name(
     };
 
     let item = TokenStream::from(item);
-    let name = fn_name(item.clone());
+    let (attrs, name) = fn_attrs_name(item.clone());
     let interpolated_name = Ident::new(&format!("{}_{}", name.to_string(), specifier), Span::call_site());
 
     let ret: TokenStream = quote_spanned! {
         proc_macro2::Span::call_site() =>
+        #attrs
         fn #interpolated_name() {
             #item
 
