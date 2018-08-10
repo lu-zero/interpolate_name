@@ -65,6 +65,7 @@ pub fn interpolate_name(
     }
 
     let specifier = match &tokens[0] {
+        TokenTree::Literal(tt) => tt.to_string(),
         TokenTree::Ident(tt) => tt.to_string(),
         _ => panic!("expected #[interpolate_name(specifier)]"),
     };
@@ -99,8 +100,9 @@ pub fn interpolate_test(
     }
 
     let specifier = match &tokens[0] {
+        TokenTree::Literal(tt) => tt.to_string(),
         TokenTree::Ident(tt) => tt.to_string(),
-        _ => panic!("expected #[interpolate_name(specifier)]"),
+        _ => panic!("expected #[interpolate_test(specifier, arguments)]"),
     };
 
     match &tokens[1] {

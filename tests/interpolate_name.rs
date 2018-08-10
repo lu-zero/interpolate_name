@@ -8,7 +8,7 @@ fn callme(f: &str) {
     println!("called {}", f);
 }
 
-#[interpolate_name(one)]
+#[interpolate_name(1)]
 #[test]
 fn try() {
 
