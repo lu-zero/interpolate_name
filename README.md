@@ -5,6 +5,7 @@
 ``` rust
 #![feature(proc_macro)]
 
+#[macro_use]
 extern crate interpolate_name;
 
 use interpolate_name::interpolate_test;

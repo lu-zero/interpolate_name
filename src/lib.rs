@@ -1,3 +1,13 @@
+//! # interpolate_name
+//!
+//! `interpolate_name` consists in a set of procedural macro attributes
+//! geared towards reduce the boilerplate while writing repetitive tests.
+//!
+//! - `interpolate_test`: a quick way to test the same function by passing specific
+//! arguments and have a test entry for each of them.
+//! - `interpolate_name`: a simple function renamer that can be combined
+//! with macros to support more complex patterns.
+
 #![feature(proc_macro)]
 
 extern crate proc_macro;
@@ -54,6 +64,18 @@ fn fn_attrs_name(item: TokenStream) -> (TokenStream, Ident) {
     (TokenStream::from_iter(attrs.into_iter()), name)
 }
 
+
+/// Rename the decorated function by appending  `_` and the provided `specifier`.
+///
+/// ```
+/// #[interpolate_name(spec)]
+/// fn foo() {}
+/// ```
+///
+/// produces:
+/// ```
+/// fn foo_spec()
+/// ```
 #[proc_macro_attribute]
 pub fn interpolate_name(
     attr: proc_macro::TokenStream,
@@ -89,6 +111,26 @@ pub fn interpolate_name(
 
 use std::iter::FromIterator;
 
+/// Generate a new test that calls the decorated function with the provided arguments.
+///
+/// The test function name is the same as the called plus `_` and `specifier`.
+/// Can decorate the same function multiple times.
+///
+/// ```
+/// #[interpolate_test(some, "some", "arguments", 1)]
+/// #[interpolate_test(name, "other", "arguments", 42)]
+/// fn foo(a: &str, b: &str, c: usize) {
+///     println!("{} {} {}", a, b,c);
+/// }
+/// ```
+///
+/// produces:
+/// ```
+/// #[test]
+/// fn foo_some() { foo("some", "arguments", 1); }
+/// #[test]
+/// fn foo_name() { foo("other", "arguments", 42); }
+/// ```
 #[proc_macro_attribute]
 pub fn interpolate_test(
     attr: proc_macro::TokenStream,
