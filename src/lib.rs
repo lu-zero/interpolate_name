@@ -8,8 +8,6 @@
 //! - `interpolate_name`: a simple function renamer that can be combined
 //! with macros to support more complex patterns.
 
-#![feature(proc_macro)]
-
 extern crate proc_macro;
 extern crate proc_macro2;
 #[macro_use]

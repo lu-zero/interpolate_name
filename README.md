@@ -3,8 +3,6 @@
 ## Usage
 
 ``` rust
-#![feature(proc_macro)]
-
 #[macro_use]
 extern crate interpolate_name;
 
