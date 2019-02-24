@@ -65,14 +65,16 @@ fn fn_attrs_name(item: TokenStream) -> (TokenStream, Ident) {
 
 /// Rename the decorated function by appending  `_` and the provided `specifier`.
 ///
-/// ```
+/// ``` no_run
+/// use interpolate_name::interpolate_name;
+///
 /// #[interpolate_name(spec)]
 /// fn foo() {}
 /// ```
 ///
 /// produces:
-/// ```
-/// fn foo_spec()
+/// ``` no_run
+/// fn foo_spec() {}
 /// ```
 #[proc_macro_attribute]
 pub fn interpolate_name(
@@ -114,7 +116,9 @@ use std::iter::FromIterator;
 /// The test function name is the same as the called plus `_` and `specifier`.
 /// Can decorate the same function multiple times.
 ///
-/// ```
+/// ``` no_run
+/// use interpolate_name::interpolate_test;
+///
 /// #[interpolate_test(some, "some", "arguments", 1)]
 /// #[interpolate_test(name, "other", "arguments", 42)]
 /// fn foo(a: &str, b: &str, c: usize) {
@@ -123,7 +127,7 @@ use std::iter::FromIterator;
 /// ```
 ///
 /// produces:
-/// ```
+/// ``` no_run
 /// #[test]
 /// fn foo_some() { foo("some", "arguments", 1); }
 /// #[test]
