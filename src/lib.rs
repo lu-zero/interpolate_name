@@ -9,11 +9,12 @@
 //! with macros to support more complex patterns.
 
 extern crate proc_macro;
-extern crate proc_macro2;
-#[macro_use]
-extern crate quote;
+
+use syn::{parse_macro_input, ItemFn, Attribute};
 
 use proc_macro2::{Ident, Span, TokenStream, TokenTree};
+
+use quote::{quote_spanned, ToTokens};
 
 fn fn_name(item: TokenStream) -> Ident {
     let mut tokens = item.into_iter();
@@ -156,7 +157,15 @@ pub fn interpolate_test(
 
     let args = TokenStream::from_iter(tokens.into_iter().skip(2));
 
-    let item = TokenStream::from(item);
+    let mut syn_item = parse_macro_input!(item as ItemFn);
+    let (mut interpolate_attrs, attrs) : (Vec<Attribute>, Vec<Attribute>) = syn_item.attrs.iter().cloned().partition(|attr| attr.path.is_ident("interpolate_test"));
+    let append_attrs = !interpolate_attrs.is_empty();
+    if append_attrs {
+        interpolate_attrs.extend(attrs.iter().cloned());
+    }
+    syn_item.attrs = interpolate_attrs;
+    let attrs = TokenStream::from_iter(attrs.iter().map(|it| it.into_token_stream()));
+    let item = TokenStream::from(syn_item.into_token_stream());
     let name = fn_name(item.clone());
     let interpolated_name = Ident::new(&format!("{}_{}", name.to_string(), specifier), Span::call_site());
 
@@ -165,6 +174,7 @@ pub fn interpolate_test(
         #item
 
         #[test]
+        #attrs
         fn #interpolated_name() {
             return #name (#args);
         }
