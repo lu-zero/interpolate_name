@@ -170,7 +170,14 @@ pub fn interpolate_test(
         .attrs
         .iter()
         .cloned()
-        .partition(|attr| attr.path.is_ident("interpolate_test"));
+        .partition(|attr| {
+            let found = if let Some(seg) = attr.path.segments.last() {
+                seg.value().ident == "interpolate_test"
+            } else {
+                false
+            };
+            found
+        });
     let append_attrs = !interpolate_attrs.is_empty();
     if append_attrs {
         interpolate_attrs.extend(attrs.iter().cloned());
