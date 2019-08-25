@@ -1,6 +1,6 @@
 [package]
 name = "interpolate_name"
-version = "0.2.2"
+version = "0.2.3"
 authors = ["Luca Barbato <lu_zero@gentoo.org>"]
 description = "Simple procedural macro attribute for repetitive tests"
 repository = "https://github.com/lu-zero/interpolate_name"
@@ -15,6 +15,6 @@ proc-macro = true
 test = false
 
 [dependencies]
-syn = { version = "0.15", features = ["fold", "full"] }
-quote = "0.6"
-proc-macro2 = "0.4"
+syn = { version = "1.0", features = ["fold", "full"] }
+quote = "1.0"
+proc-macro2 = "1.0"

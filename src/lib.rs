@@ -172,7 +172,7 @@ pub fn interpolate_test(
         .cloned()
         .partition(|attr| {
             let found = if let Some(seg) = attr.path.segments.last() {
-                seg.value().ident == "interpolate_test"
+                seg.ident == "interpolate_test"
             } else {
                 false
             };
