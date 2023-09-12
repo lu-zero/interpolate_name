@@ -166,12 +166,9 @@ pub fn interpolate_test(
     let args = TokenStream::from_iter(tokens.into_iter().skip(2));
 
     let mut syn_item = parse_macro_input!(item as ItemFn);
-    let (mut interpolate_attrs, attrs): (Vec<Attribute>, Vec<Attribute>) = syn_item
-        .attrs
-        .iter()
-        .cloned()
-        .partition(|attr| {
-            let found = if let Some(seg) = attr.path.segments.last() {
+    let (mut interpolate_attrs, attrs): (Vec<Attribute>, Vec<Attribute>) =
+        syn_item.attrs.iter().cloned().partition(|attr| {
+            let found = if let Some(seg) = attr.path().segments.last() {
                 seg.ident == "interpolate_test"
             } else {
                 false
